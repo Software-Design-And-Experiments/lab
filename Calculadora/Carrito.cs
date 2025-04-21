@@ -1,6 +1,6 @@
 ﻿namespace Calculadora
 {
-    public class Carrito
+    public class Carrito : ICarrito
     {
         private List<Producto> _productos;
 
