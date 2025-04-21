@@ -43,6 +43,8 @@ namespace Calculadora.Tests
                 Assert.That(productos[0].Nombre, Is.EqualTo("PAPA"), "El nombre del producto no coincide.");
                 Assert.That(productos[0].Precio, Is.EqualTo(4.50), "El precio del producto no coincide.");
             });
+
+            _carritoMock.Verify(c => c.AgregarProducto(It.IsAny<string>(), It.IsAny<double>()), Times.Exactly(2));
         }
 
         [Test]
