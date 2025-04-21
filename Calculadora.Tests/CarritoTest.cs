@@ -6,6 +6,7 @@ namespace Calculadora.Tests
     {
         private Mock<ICarrito> _carritoMock;
         private Carrito _carrito;
+        private CarritoController _carritoController;
 
         [SetUp]
         public void Setup()
@@ -27,14 +28,16 @@ namespace Calculadora.Tests
 
             _carritoMock.Setup(c => c.ObtenerProductos())
                 .Returns(() => productosSimulados);
+
+            _carritoController = new CarritoController(_carritoMock.Object);
         }
 
         [Test]
         public void AgregarProductoTest()
         {
-            _carrito.AgregarProducto("PAPA", 4.50);
+            _carritoController.AgregarProducto("PAPA", 4.50);
 
-            var productos = _carrito.ObtenerProductos().ToList();
+            var productos = _carritoController.ObtenerProductos().ToList();
 
             Assert.That(productos, Has.Count.EqualTo(1), "El producto no fue agregado correctamente.");
 
@@ -44,17 +47,19 @@ namespace Calculadora.Tests
                 Assert.That(productos[0].Precio, Is.EqualTo(4.50), "El precio del producto no coincide.");
             });
 
-            _carritoMock.Verify(c => c.AgregarProducto(It.IsAny<string>(), It.IsAny<double>()), Times.Exactly(2));
+            _carritoMock.Verify(c => c.AgregarProducto(It.IsAny<string>(), It.IsAny<double>()), Times.Exactly(1));
         }
 
         [Test]
         public void CalcularMontoFinalTest()
         {
-            var resultado = _carrito.CalcularMontoFinal();
+            _carritoController.AgregarProducto("PAPA", 4.50);
 
-            Assert.That(resultado, Is.EqualTo(4.50), "EL MONTO FINAL ES S/4.50");
+            var resultado = _carritoController.CalcularMontoFinal();
 
-            _carritoMock.Verify(c => c.ObtenerProductos(), Times.Exactly(2));
+            Assert.That(resultado, Is.EqualTo(4.50), "EL MONTO FINAL DEBE SER S/4.50");
+
+            _carritoMock.Verify(c => c.CalcularMontoFinal(), Times.Exactly(1));
         }
     }
 }
