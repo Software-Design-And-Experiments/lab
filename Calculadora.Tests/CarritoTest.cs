@@ -1,13 +1,32 @@
-﻿namespace Calculadora.Tests
+﻿using Moq;
+
+namespace Calculadora.Tests
 {
     public class CarritoTest
     {
+        private Mock<ICarrito> _carritoMock;
         private Carrito _carrito;
 
         [SetUp]
         public void Setup()
         {
             _carrito = new Carrito();
+
+            List<Producto> productosSimulados = new();
+
+            _carritoMock = new Mock<ICarrito>();
+
+            _carritoMock.Setup(c => c.AgregarProducto(It.IsAny<string>(), It.IsAny<double>()))
+                .Callback<string, double>((nombre, precio) =>
+                {
+                    productosSimulados.Add(new Producto(nombre, precio));
+                });
+
+            _carritoMock.Setup(c => c.CalcularMontoFinal())
+                .Returns(() => productosSimulados.Sum(p => p.Precio));
+
+            _carritoMock.Setup(c => c.ObtenerProductos())
+                .Returns(() => productosSimulados);
         }
 
         [Test]
