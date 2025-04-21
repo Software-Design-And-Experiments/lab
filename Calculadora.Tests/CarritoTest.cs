@@ -53,6 +53,8 @@ namespace Calculadora.Tests
             var resultado = _carrito.CalcularMontoFinal();
 
             Assert.That(resultado, Is.EqualTo(4.50), "EL MONTO FINAL ES S/4.50");
+
+            _carritoMock.Verify(c => c.ObtenerProductos(), Times.Exactly(2));
         }
     }
 }
